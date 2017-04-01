@@ -1,0 +1,6 @@
+string robotName
+---
+float32 searchStartWidth
+float32 searchEndWidth
+bool prelim
+

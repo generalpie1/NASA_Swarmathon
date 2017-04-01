@@ -1,0 +1,4 @@
+string robotName
+float64 currTheta
+---
+int64 robotIdInHive

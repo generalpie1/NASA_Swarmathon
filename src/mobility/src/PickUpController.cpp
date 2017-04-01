@@ -19,7 +19,7 @@ PickUpController::PickUpController() {
 
 PickUpResult PickUpController::pickUpSelectedTarget(bool blockBlock) {
     //threshold distance to be from the target block before attempting pickup
-    float targetDist = 0.25; //meters
+    float targetDist = 0.20; //meters
 
 
     /*PickUpResult result;
@@ -51,8 +51,10 @@ PickUpResult PickUpController::pickUpSelectedTarget(bool blockBlock) {
         //if in a counting state and has been counting for 1 second
         else if (Td > 1 && Td < 2.5)
         {
-            result.cmdVel = -0.2;
-            result.angleError = 0.0;
+            //result.cmdVel = -0.2;
+            //result.angleError = 0.0;
+            result.cmdVel = 0; //make robot stay in place when searching fot the lost cube
+            result.angleError = -blockYawError/2; //turn to find the lost cube in the previously seen dirrection
         }
     }
     else if (blockDist > targetDist && !lockTarget) //if a target is detected but not locked, and not too close.
@@ -69,17 +71,17 @@ PickUpResult PickUpController::pickUpSelectedTarget(bool blockBlock) {
     else if (!lockTarget) //if a target hasn't been locked lock it and enter a counting state while slowly driving forward.
     {
         lockTarget = true;
-        result.cmdVel = 0.18;
+        result.cmdVel = 0.25;
         result.angleError = 0.0;
         timeOut = true;
     }
-    else if (Td > 2.4) //raise the wrist
+    else if (Td > 2.7) //raise the wrist
     {
-        result.cmdVel = -0.25;
+        result.cmdVel = -0.30;
         result.angleError = 0.0;
         result.wristAngle = 0;
     }
-    else if (Td > 1.7) //close the fingers and stop driving
+    else if (Td > 1.1) //close the fingers and drive back with little speed
     {
         result.cmdVel = -0.1;
         result.angleError = 0.0;
@@ -87,7 +89,7 @@ PickUpResult PickUpController::pickUpSelectedTarget(bool blockBlock) {
         return result;
     }
 
-    if (Td > 3.8 && timeOut) //if enough time has passed enter a recovery state to re-attempt a pickup
+    if (Td > 3.4 && timeOut) //if enough time has passed enter a recovery state to re-attempt a pickup
     {
         if (blockBlock) //if the ultrasound is blocked at less than .12 meters a block has been picked up no new pickup required
         {
